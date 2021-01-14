@@ -1,30 +1,32 @@
 import React, {useState} from 'react';
 import {
-  SafeAreaView,
   Text,
   View,
   PermissionsAndroid,
   Platform,
   ActivityIndicator,
   Button,
+  Alert,
 } from 'react-native';
 import {CameraKitCameraScreen} from 'react-native-camera-kit';
-import {addScanCheckThunk} from './../../../redux/Actions/InputActions';
+import {addScanCheckThunk} from '../../../actions/ScanActions';
 import {connect} from 'react-redux';
 import {useFocusEffect} from '@react-navigation/native';
 import styles from './style';
+import { funcSeparator, wait } from '../../../constants/app_env';
 
 const ScanCheck = (props) => {
   const [qrvalue, setQrvalue] = useState();
-  const wait = (timeout) => {
-    return new Promise((resolve) => {
-      setTimeout(resolve, timeout);
-    });
-  };
-
+  
   useFocusEffect(
     React.useCallback(() => {
-      onOpenScanner(); 
+      onOpenScanner(); // make check
+      // wait(2000).then(() =>
+      //   onBarcodeScan(
+      //     't=20201102T1537&s=370.0&fn=924423&i=12133&fp=322&n=1',
+      //     's=370.0&fn=92&i=12133&fp=322&n=1',
+      //   ),
+      // );
 
       return () => props.toggleIsScanner(false);
     }, []),
@@ -32,9 +34,23 @@ const ScanCheck = (props) => {
 
   const onBarcodeScan = (qrvalue) => {
     setQrvalue(qrvalue);
-    props.addScanCheckThunk(qrvalue);
+    let dataScan = {};
+    funcSeparator(qrvalue, dataScan);
+    if (dataScan.t && dataScan.fp && dataScan.fn && dataScan.s && dataScan.i) {
+      props.addScanCheckThunk(dataScan);
+    } else { alertError() }
     props.toggleIsScanner(false);
   };
+
+  const alertError = () =>
+  Alert.alert(
+    'НЕ КАССОВЫЙ ЧЕК',
+    'QR код не соответствует законодательству РФ. Вы можете повторно отсканировать чек, или ввести его вручную.',
+    [
+      { text: 'ПОВТОРИТЬ', onPress: () => console.log('Pressed') }
+    ],
+    { cancelable: true }
+  );
 
   const onOpenScanner = () => {
     if (Platform.OS === 'android') {
@@ -120,7 +136,6 @@ const ScanCheck = (props) => {
 };
 
 let mapStateToProps = (state) => ({
-  scans: state.InputScreen.scans,
 });
 
 export default connect(mapStateToProps, {addScanCheckThunk})(ScanCheck);

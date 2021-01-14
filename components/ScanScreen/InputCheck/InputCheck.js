@@ -1,21 +1,21 @@
 import {Formik} from 'formik';
 import * as yup from 'yup';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {View, Text, TextInput, Button, ActivityIndicator} from 'react-native';
 import {connect} from 'react-redux';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import dayjs from 'dayjs';
 import {TimeUtc} from '../../../constants/time';
-import {addCheckThunk} from '../../../redux/Actions/InputActions';
+import {addCheckThunk} from '../../../actions/ScanActions';
 import styles from './styles';
 import {ScrollView} from 'react-native-gesture-handler';
 
 const InputCheckValidationSchema = yup.object().shape({
-  timestamp: yup
+  t: yup
     .string()
     .min(1, ({min}) => `Поле должно содержать ${min} символов`)
     .required('Выберите время'),
-  fd: yup
+  s: yup
     .string()
     .min(1, ({min}) => `Поле должно содержать ${min} символов`)
     .required('Заполните поле'),
@@ -23,11 +23,12 @@ const InputCheckValidationSchema = yup.object().shape({
     .string()
     .min(1, ({min}) => `Поле должно содержать ${min} символов`)
     .required('Заполните поле'),
-  fp: yup
+  i: yup
     .string()
     .min(1, ({min}) => `Поле должно содержать ${min} символов`)
     .required('Заполните поле'),
-  sum: yup
+
+  fp: yup
     .string()
     .min(1, ({min}) => `Поле должно содержать ${min} символов`)
     .required('Заполните поле'),
@@ -42,7 +43,7 @@ const InputCheck = (props) => {
     <ScrollView style={styles.loginContainer}>
       <Formik
         validationSchema={InputCheckValidationSchema}
-        initialValues={{fd: '', fn: '', fp: '', timestamp: '', sum: ''}}
+        initialValues={{t: '', s: '', fn: '', i: '', fp: ''}}
         onSubmit={(values, {resetForm}) => {
           onSubmitInput(values);
           resetForm({values: ''});
@@ -70,7 +71,7 @@ const InputCheck = (props) => {
           };
 
           const handleConfirm = (value) => {
-            setFieldValue('timestamp', dayjs(value).format(TimeUtc));
+            setFieldValue('t', dayjs(value).format(TimeUtc));
             hideDatePicker();
           };
 
@@ -91,18 +92,17 @@ const InputCheck = (props) => {
                   is24Hour={true}
                   onConfirm={handleConfirm}
                   onCancel={hideDatePicker}
-                  // value={values.timestamp}
                 />
               </View>
               <View style={styles.textInputContainer}>
                 <View style={styles.textInput}>
                   <TextInput
-                    name="dateTime"
+                    name="timestamp"
                     placeholder="Выберите время"
                     style={styles.textInputTimeInfo}
-                    onChangeText={handleChange('timestamp')}
-                    onBlur={handleBlur('timestamp')}
-                    value={values.timestamp}
+                    onChangeText={handleChange('t')}
+                    onBlur={handleBlur('t')}
+                    value={values.t}
                   />
                   <Button
                     style={styles.textInputTimeButton}
@@ -110,22 +110,8 @@ const InputCheck = (props) => {
                     onPress={showDatePicker}
                   />
                 </View>
-                {errors.timestamp && touched.timestamp && (
-                  <Text style={styles.errorTouched}>{errors.timestamp}</Text>
-                )}
-              </View>
-              <View style={styles.textInputContainer}>
-                <TextInput
-                  name="fd"
-                  placeholder="Введите Фискальные данные"
-                  style={styles.textInput}
-                  onChangeText={handleChange('fd')}
-                  onBlur={handleBlur('fd')}
-                  value={values.fd}
-                  keyboardType="number-pad"
-                />
-                {errors.fd && touched.fd && (
-                  <Text style={styles.errorTouched}>{errors.fd}</Text>
+                {errors.t && touched.t && (
+                  <Text style={styles.errorTouched}>{errors.t}</Text>
                 )}
               </View>
               <View style={styles.textInputContainer}>
@@ -140,6 +126,20 @@ const InputCheck = (props) => {
                 />
                 {errors.fn && touched.fn && (
                   <Text style={styles.errorTouched}>{errors.fn}</Text>
+                )}
+              </View>
+              <View style={styles.textInputContainer}>
+                <TextInput
+                  name="fd"
+                  placeholder="Введите Фискальные данные"
+                  style={styles.textInput}
+                  onChangeText={handleChange('i')}
+                  onBlur={handleBlur('i')}
+                  value={values.i}
+                  keyboardType="number-pad"
+                />
+                {errors.i && touched.i && (
+                  <Text style={styles.errorTouched}>{errors.i}</Text>
                 )}
               </View>
               <View style={styles.textInputContainer}>
@@ -161,13 +161,13 @@ const InputCheck = (props) => {
                   name="sum"
                   placeholder="Введите Сумму"
                   style={styles.textInput}
-                  onChangeText={handleChange('sum')}
-                  onBlur={handleBlur('sum')}
-                  value={values.sum}
+                  onChangeText={handleChange('s')}
+                  onBlur={handleBlur('s')}
+                  value={values.s}
                   keyboardType="number-pad"
                 />
-                {errors.sum && touched.sum && (
-                  <Text style={styles.errorTouched}>{errors.sum}</Text>
+                {errors.s && touched.s && (
+                  <Text style={styles.errorTouched}>{errors.s}</Text>
                 )}
               </View>
               <View style={styles.buttonContainer}>
@@ -187,7 +187,7 @@ const InputCheck = (props) => {
 };
 
 let mapStateToProps = (state) => ({
-  isFetching: state.InputScreen.isFetching,
+  isFetching: state.ScanScreen.isFetching,
 });
 
 export default connect(mapStateToProps, {addCheckThunk})(InputCheck);

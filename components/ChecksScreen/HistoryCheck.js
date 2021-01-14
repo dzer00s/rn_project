@@ -2,38 +2,32 @@ import {useFocusEffect} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {FlatList, View, RefreshControl, Text, Pressable} from 'react-native';
 import {connect} from 'react-redux';
-import Realm from 'realm';
-import {realm, Receipt} from '../../constants/database';
+import {Receipt} from '../../constants/database';
 import {
-  updData,
   toggleIsModal,
   receiveData,
-} from './../../redux/Actions/HistoryActions';
+} from './../../actions/HistoryActions';
 import {
-  deleteInDB,
-} from './../../redux/Actions/InputActions';
+  deleteCheckThunk, updCheckLocalyThunk, getUpdDataCheckThunk,
+} from './../../actions/ScanActions';
 import HistoryEl from './HistoryCard/HistoryEl';
 import HistoryModal from './HistoryModalScreen/HistoryModal';
 import styles from './styles';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
+import { wait } from '../../constants/app_env';
 
 const HistoryCheck = (props) => {
   useEffect(() => {
     props.receiveData();
   }, []);
 
-  // let [HistoryList, updFlatListItems] = useState();
-  // useFocusEffect(
-  //   React.useCallback(() => {
-  //     props.receiveData();
-  //     console.log('updData');
-  //     updFlatListItems(props.ScansList);
-  //     // return () => updFlatListItems(props.ScansList);
-  //   },
-  //   )
-  // )
+  useFocusEffect(
+    React.useCallback(() => {
+      onRefresh();
+    }, []),
+  );
 
-  const onSubmitButton = () => {
+  const onUpdateInfo = () => {
     let status_none = Receipt.filtered('status_app contains "inProcess"');
     let status_before = '';
     for (let status of status_none) {
@@ -41,38 +35,43 @@ const HistoryCheck = (props) => {
     }
     let status_after = status_before.slice(0, -1);
     console.log(status_after);
-    props.updData(status_after);
+    if (status_after.length) {
+      props.getUpdDataCheckThunk(status_after);
+    } else { null }
   };
+
+  const onUpdateInfoLocaly = () => {
+    let status_none = Receipt.filtered('status_app contains "localy"');
+    for (let status of status_none) {
+      props.updCheckLocalyThunk(status);
+    }
+  }
 
   const [pickItem, setPickItem] = useState([{}]);
   const _onPress = (isModalOpen, item) => (
     setPickItem(item), props.toggleIsModal(isModalOpen)
   );
 
-  const wait = (timeout) => {
-    return new Promise((resolve) => {
-      setTimeout(resolve, timeout);
-    });
-  };
-
   const [refreshing, setRefreshing] = React.useState(false);
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    onSubmitButton();
-    wait(2000).then(() => setRefreshing(false));
+    onUpdateInfoLocaly();
+    onUpdateInfo();
+    wait(1000).then(() => setRefreshing(false));
   }, []);
 
   const RightItem = () => {
     return (
       <View style={styles.containerElSwipe}>
-        <Text style={{fontSize: 20}}>Удалить</Text>
+        <Text style={styles.deleteEl}>Удалить</Text>
       </View>
     );
   };
 
   const DeleteDB = (item) => {
-    props.deleteInDB(item);
+    props.deleteCheckThunk(item);
+    onRefresh();
   };
 
   return (
@@ -87,11 +86,11 @@ const HistoryCheck = (props) => {
         // inverted
         // removeClippedSubviews={false}
         data={props.ScansList}
-        extraData={props}
+        extraData={props.ScansList}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={(item) => item.hash}
         refreshing={true}
         renderItem={({item}) => (
           <Swipeable
@@ -117,14 +116,15 @@ const HistoryCheck = (props) => {
 };
 
 let mapStateToProps = (state) => ({
-  // scans: state.ScanScreen.scans,
   isModalOpen: state.HistoryScreen.isModalOpen,
-  ScansList: state.InputScreen.ScansList,
+  ScansList: state.ScanScreen.ScansList,
+  currentCheck: state.ScanScreen.currentCheck,
 });
 
 export default connect(mapStateToProps, {
-  updData,
   toggleIsModal,
   receiveData,
-  deleteInDB,
+  deleteCheckThunk,
+  updCheckLocalyThunk,
+  getUpdDataCheckThunk,
 })(HistoryCheck);

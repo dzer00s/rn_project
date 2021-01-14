@@ -58,22 +58,4 @@ export default styles = StyleSheet.create({
   textSecondaryEl: {
     fontSize: 16,
   },
-
-  // containerEl: {
-  //   backgroundColor: "#ECEBEB",
-  //   borderRadius: 5,
-  //   // alignItems: "center",
-  //   // justifyContent: "center",
-  //   width: "100%",
-  //   height: 100,
-  //   margin: 10,
-  //   shadowColor: "#000",
-  //   shadowOffset: {
-  //     width: 0,
-  //     height: 1,
-  //   },
-  //   shadowOpacity: 0.2,
-  //   shadowRadius: 1.41,
-  //   elevation: 1,
-  // },
 });

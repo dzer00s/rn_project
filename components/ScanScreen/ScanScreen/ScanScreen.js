@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Image, Modal, Pressable, Text, View} from 'react-native';
 import {connect} from 'react-redux';
 import ScanCheck from '../ScanCheck/ScanCheck';
-import {toggleIsModalInput, toggleIsScanner} from '../../../redux/Actions/InputActions';
+import {toggleIsModalInput, toggleIsScanner} from '../../../actions/ScanActions';
 import styles from './styles';
 import InputCheckMain from '../InputCheck/InputCheckMain';
 
@@ -77,9 +77,9 @@ const ScanScreen = (props) => {
 };
 
 let mapStateToProps = (state) => ({
-  InputCheckIsModalOpen: state.InputScreen.InputCheckIsModalOpen,
-  openScanner: state.InputScreen.openScanner,
-  isFetching: state.InputScreen.isFetching,
+  InputCheckIsModalOpen: state.ScanScreen.InputCheckIsModalOpen,
+  openScanner: state.ScanScreen.openScanner,
+  isFetching: state.ScanScreen.isFetching,
 });
 
 export default connect(mapStateToProps, {toggleIsModalInput, toggleIsScanner })(ScanScreen);

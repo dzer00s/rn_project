@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native';
-import { colorBody, colorHeader } from '../../constants/app_env';
+import { colorBody, colorDelete, colorHeader } from '../../constants/app_env';
 
 export default styles = StyleSheet.create({
   containerEl: {
@@ -33,12 +33,17 @@ export default styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   containerElSwipe: {
-    // backgroundColor: 'red',
+    backgroundColor: colorDelete,
     marginTop: 15,
+    borderRadius: 5,
     marginBottom: 20,
     marginRight: 20,
-    // textAlign: 'center',
-    width: 100,
+    alignItems: 'center',
     justifyContent: 'center',
+    width: 100,
+  },
+  deleteEl: {
+    fontSize: 20,
+    color: 'white',
   }
 });

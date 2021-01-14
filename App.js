@@ -1,11 +1,7 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import TabFooter from './components/TabFooter';
 import {Provider} from 'react-redux';
-import {createStore} from 'redux';
-import ScanReducer from './redux/Reducers/ScanReducer';
-import store from './redux/store';
-import { colorBody } from './constants/app_env';
 
 // const store = createStore(ScanReducer);
 

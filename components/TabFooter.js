@@ -5,7 +5,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MainScreenCheck from './ScanScreen/MainScreenCheck';
 import HistoryCheck from './ChecksScreen/HistoryCheck';
 import {Provider} from 'react-redux';
-import store from '../redux/store';
+import store from '../store';
 import ProfileMain from './ProfileScreen/ProfileMain';
 
 const styles = StyleSheet.create({

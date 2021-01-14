@@ -2,57 +2,37 @@
 export const colorHeader = '#DDDDDD';
 export const colorBody = '#f2f2f2';
 export const colorBodySec = '#e6e6e6';
+export const colorDelete = '#d4180e';
 
-//HEADER
-let myHeaders = new Headers();
-myHeaders.append('Content-Type', 'application/json');
-myHeaders.append('Authorization', API_KEY);
-export const headerData = myHeaders;
+export const wait = (timeout) => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, timeout);
+  });
+};
 
-export const raw_in = (data) =>
+export const rawScan = (data, isScan) =>
   JSON.stringify({
-    fd: data.fd,
+    timestamp: (!isScan ? data.t : toISOString(data.t)),
+    sum: data.s,
     fn: data.fn,
+    fd: data.i,
     fp: data.fp,
-    sum: data.sum,
-    timestamp: data.timestamp,
     // hash: hashSum,
   });
 
-// ADD_INPUT
-export const requestOptionsInput = (inputqrvalue) => (  
-  method = 'POST',
-  headers = headerData,
-  body = raw_in(inputqrvalue),
-  redirect = 'follow'
-);
-
-export let dataScan = {};
-
-
-      // ADD_SCAN
-export const funcSeparator = (value) => {
+// ADD_SCAN
+export const funcSeparator = (value, dataScan) => {
   let subStrings = value.split('&');
   subStrings.map((element) => {
     let splitted = element.split('=');
     dataScan[splitted[0]] = splitted[1];
   });
 }
-export let rawScan = () =>  JSON.stringify({
-  fd: dataScan.i,
-  fn: dataScan.fn,
-  fp: dataScan.fp,
-  sum: dataScan.s,
-  timestamp: toISOString(dataScan.t),
-});
 
-
-   // need Refactoring
 function toISOString(qrDateString) {
-  const parts = qrDateString.match(/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})$/);
-
+  let parts = qrDateString.match(/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})$/);
   if (!parts) {
-    throw Error('Invalid datestring format');
+    parts = qrDateString.match(/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})$/);
   }
 
   const date = new Date(
@@ -67,6 +47,7 @@ function toISOString(qrDateString) {
   return date.toISOString();
 }
 
+// total 
 export function thousands(number, separator) {
   var parts = ((number || number === 0 ? number : '') + '').split('.');
 

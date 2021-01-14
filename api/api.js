@@ -1,7 +1,6 @@
 import Axios from "axios";
 
-const API_KEY =
-  '';
+const API_KEY = '';
 const url = 'http://localhost:8080/';
 
 const instance = Axios.create({
@@ -17,10 +16,7 @@ export const scanAPI = {
     setInput(raw) {
         return instance.post(`receipts`, raw)
     },
-}
-
-export const historyAPI = {
     updData(raw) {
         return instance.get(`receipts?ids=${raw}`)
     },
-}
+};

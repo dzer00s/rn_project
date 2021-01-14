@@ -2,7 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import HistoryModal from '../ChecksScreen/HistoryModalScreen/HistoryModal';
 import ScanScreen from './ScanScreen/ScanScreen';
-import {toggleIsCheckAdded, toggleIsScanner} from './../../redux/Actions/InputActions'
+import {toggleIsCheckAdded, toggleIsScanner} from './../../actions/ScanActions'
 
 const MainScreenCheck = (props) => {
   const _onPress = (isModalOpen, openScanner) => (
@@ -23,8 +23,8 @@ const MainScreenCheck = (props) => {
 };
 
 let mapStateToProps = (state) => ({
-  CheckIsAdded: state.InputScreen.CheckIsAdded,
-  currentCheck: state.InputScreen.currentCheck,
+  CheckIsAdded: state.ScanScreen.CheckIsAdded,
+  currentCheck: state.ScanScreen.currentCheck,
 });
 
 export default connect(mapStateToProps, {toggleIsCheckAdded, toggleIsScanner})(MainScreenCheck);
